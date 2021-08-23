@@ -3,9 +3,9 @@ locals {
   subscription_name = local.base_name
   instance_name = "${local.base_name}-instance"
   bin_dir       = module.setup_clis.bin_dir
-  subscription_chart_dir = "${path.module}/charts/ibm-platoform-navigator"
+  subscription_chart_dir = "${path.module}/charts/ibm-platform-navigator"
   subscription_yaml_dir = "${path.cwd}/.tmp/${local.base_name}/chart/${local.subscription_name}"
-  instance_chart_dir = "${path.module}/charts/ibm-platoform-navigator-instance"
+  instance_chart_dir = "${path.module}/charts/ibm-platform-navigator-instance"
   instance_yaml_dir     = "${path.cwd}/.tmp/${local.base_name}/chart/${local.instance_name}"
   subscription_values_content = {
     "ibm-platform-navigator" = {
