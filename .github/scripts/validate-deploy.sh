@@ -38,7 +38,7 @@ cat "payload/2-services/namespace/${NAMESPACE}/${COMPONENT_NAME}/values.yaml"
 
 ## ***** Instance
 
-NAMESPACE=$(cat .namespace)
+NAMESPACE="gitops-cp-platform-navigator"
 BRANCH="main"
 SERVER_NAME="default"
 TYPE="instances"
