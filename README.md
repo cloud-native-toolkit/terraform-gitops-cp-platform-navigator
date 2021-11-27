@@ -8,7 +8,7 @@ The module depends on the following software components:
 
 ### Command-line tools
 
-- terraform - v14
+- terraform >= v0.15
 
 ### Terraform providers
 
