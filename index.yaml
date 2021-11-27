@@ -145,6 +145,147 @@ versions:
         description: The number of replicas to create for the platform navigator
         default: 2
         optional: true
+    version: v1.0.1
+    outputs:
+      - name: name
+        description: The name of the platform navigator instance
+      - name: namespace
+        description: The namespace where the platform navigator instance has been deployed
+  - platforms:
+      - ocp4
+    dependencies:
+      - id: gitops
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-tools-gitops.git
+            version: ">= 1.1.0"
+      - id: namespace
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-gitops-namespace.git
+            version: ">= 1.0.0"
+      - id: catalogs
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-gitops-cp-catalogs.git
+            version: ">= 1.0.0"
+    variables:
+      - name: gitops_config
+        moduleRef:
+          id: gitops
+          output: gitops_config
+        type: |-
+          object({
+              boostrap = object({
+                argocd-config = object({
+                  project = string
+                  repo = string
+                  url = string
+                  path = string
+                })
+              })
+              infrastructure = object({
+                argocd-config = object({
+                  project = string
+                  repo = string
+                  url = string
+                  path = string
+                })
+                payload = object({
+                  repo = string
+                  url = string
+                  path = string
+                })
+              })
+              services = object({
+                argocd-config = object({
+                  project = string
+                  repo = string
+                  url = string
+                  path = string
+                })
+                payload = object({
+                  repo = string
+                  url = string
+                  path = string
+                })
+              })
+              applications = object({
+                argocd-config = object({
+                  project = string
+                  repo = string
+                  url = string
+                  path = string
+                })
+                payload = object({
+                  repo = string
+                  url = string
+                  path = string
+                })
+              })
+            })
+        description: Config information regarding the gitops repo structure
+      - name: git_credentials
+        moduleRef:
+          id: gitops
+          output: git_credentials
+        type: |-
+          list(object({
+              repo = string
+              url = string
+              username = string
+              token = string
+            }))
+        description: The credentials for the gitops repo(s)
+      - name: server_name
+        moduleRef:
+          id: gitops
+          output: server_name
+        type: string
+        description: The name of the server
+        default: default
+        optional: true
+      - name: namespace
+        moduleRef:
+          id: namespace
+          output: name
+        type: string
+        description: The namespace where the application should be deployed
+      - name: catalog
+        moduleRef:
+          id: catalogs
+          output: catalog_ibmoperators
+        type: string
+        description: The catalog source that should be used to deploy the operator
+        default: ibm-operator-catalog
+        optional: true
+      - name: subscription_namespace
+        type: string
+        description: The namespace where the application should be deployed
+        default: openshift-operators
+        optional: true
+      - name: channel
+        type: string
+        description: The channel from which the Platform Navigator should be installed
+        default: v5.0
+        optional: true
+      - name: instance_version
+        type: string
+        description: The version of the Platform Navigator should be installed
+        default: 2020.4.1-eus
+        optional: true
+      - name: license
+        type: string
+        description: The license string that should be used for the instance
+        default: L-RJON-BUVMQX
+        optional: true
+      - name: catalog_namespace
+        type: string
+        description: The namespace where the catalog has been deployed
+        default: openshift-marketplace
+        optional: true
+      - name: replica_count
+        type: number
+        description: The number of replicas to create for the platform navigator
+        default: 2
+        optional: true
     version: v1.0.0
     outputs:
       - name: name
