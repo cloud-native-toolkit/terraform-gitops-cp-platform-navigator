@@ -43,6 +43,7 @@ locals {
   values_file = "values-${var.server_name}.yaml"
   layer = "services"
   application_branch = "main"
+  type="instances"
   layer_config = var.gitops_config[local.layer]
 }
 
@@ -88,7 +89,7 @@ resource null_resource setup_instance_gitops {
   depends_on = [null_resource.create_instance_yaml]
 
   provisioner "local-exec" {
-    command = "${local.bin_dir}/igc gitops-module '${local.instance_name}' -n '${var.namespace}' --contentDir '${local.instance_yaml_dir}' --serverName '${var.server_name}' -l '${local.layer}' --type=instances --valueFiles='values.yaml,${local.values_file}'"
+    command = "${local.bin_dir}/igc gitops-module '${local.instance_name}' -n '${var.namespace}' --contentDir '${local.instance_yaml_dir}' --serverName '${var.server_name}' -l '${local.layer}' --type=${local.type} --valueFiles='values.yaml,${local.values_file}'"
 
     environment = {
       GIT_CREDENTIALS = nonsensitive(yamlencode(var.git_credentials))
