@@ -111,3 +111,30 @@ cat "payload/2-services/namespace/${NAMESPACE}/${COMPONENT_NAME}/values.yaml"
 cd ..
 rm -rf .testrepo
 
+CR="platformnavigator/${COMPONENT_NAME}"
+count=0
+until kubectl get "${CR}" -n "${NAMESPACE}" || [[ $count -eq 20 ]]; do
+  echo "Waiting for ${CR} in ${NAMESPACE}"
+  count=$((count + 1))
+  sleep 15
+done
+
+if [[ $count -eq 20 ]]; then
+  echo "Timed out waiting for ${CR} in ${NAMESPACE}"
+  kubectl get platformnavigator -n "${NAMESPACE}"
+  exit 1
+fi
+
+DEPLOYMENT="deployment/${COMPONENT_NAME}"
+count=0
+until kubectl get "${DEPLOYMENT}" -n "${NAMESPACE}" || [[ $count -eq 20 ]]; do
+  echo "Waiting for ${DEPLOYMENT} in ${NAMESPACE}"
+  count=$((count + 1))
+  sleep 15
+done
+
+if [[ $count -eq 20 ]]; then
+  echo "Timed out waiting for ${DEPLOYMENT} in ${NAMESPACE}"
+  kubectl get deployment -n "${NAMESPACE}"
+  exit 1
+fi
