@@ -1,4 +1,4 @@
-module "platform_navigator" {
+module "gitops_module" {
   source = "./module"
 
   gitops_config = module.gitops.gitops_config
