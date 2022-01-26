@@ -68,7 +68,7 @@ fi
 
 CSV="ibm-integration-platform-navigator"
 count=0
-until [[ $(kubectl get csv -n "${NAMESPACE}" -l operators.coreos.com/${CSV}.${NAMESPACE}="" -o=jsonpath='{range .items[]}{.metadata..name}{"\n"}{end}' | wc -l) -gt 0 ]] || [[ $count -eq 20 ]]; do
+until [[ $(kubectl get csv -n "${NAMESPACE}" -l operators.coreos.com/${CSV}.${NAMESPACE}="" -o=jsonpath='{range .items[]}{.metadata.name}{"\n"}{end}' | wc -l) -gt 0 ]] || [[ $count -eq 20 ]]; do
   echo "Waiting for csv ${CSV} in ${NAMESPACE}"
   count=$((count + 1))
   sleep 15
@@ -81,7 +81,7 @@ if [[ $count -eq 20 ]]; then
 fi
 
 echo "Found CSV"
-kubectl get csv -n "${NAMESPACE}" -l operators.coreos.com/${CSV}.${NAMESPACE}="" -o=jsonpath='{range .items[]}{.metadata..name}{"\n"}{end}'
+kubectl get csv -n "${NAMESPACE}" -l operators.coreos.com/${CSV}.${NAMESPACE}="" -o=jsonpath='{range .items[]}{.metadata.name}{"\n"}{end}'
 
 ## ***** Instance
 
