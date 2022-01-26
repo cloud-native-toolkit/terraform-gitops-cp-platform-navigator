@@ -111,6 +111,8 @@ cat "payload/2-services/namespace/${NAMESPACE}/${COMPONENT_NAME}/values.yaml"
 cd ..
 rm -rf .testrepo
 
+sleep 180
+
 CR="platformnavigator/${COMPONENT_NAME}"
 count=0
 until kubectl get "${CR}" -n "${NAMESPACE}" || [[ $count -eq 20 ]]; do
