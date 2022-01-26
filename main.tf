@@ -71,7 +71,7 @@ resource null_resource setup_subscription_gitops {
     yaml_dir = local.subscription_yaml_dir
     server_name = var.server_name
     layer = local.layer
-    type = 'operators'
+    type = "operators"
     git_credentials = yamlencode(var.git_credentials)
     gitops_config   = yamlencode(var.gitops_config)
   }
