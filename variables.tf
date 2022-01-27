@@ -115,3 +115,14 @@ variable "replica_count" {
   description = "The number of replicas to create for the platform navigator"
   default     = 2
 }
+
+variable "entitlement_key" {
+  type        = string
+  description = "The entitlement key required to access Cloud Pak images"
+  sensitive   = true
+}
+
+variable "kubeseal_cert" {
+  type        = string
+  description = "The certificate/public key used to encrypt the sealed secrets"
+}

@@ -9,4 +9,6 @@ module "gitops_module" {
   channel = module.cp4i-dependencies.platform_navigator.channel
   instance_version = module.cp4i-dependencies.platform_navigator.version
   license = module.cp4i-dependencies.platform_navigator.license
+  entitlement_key = module.cp_catalogs.entitlement_key
+  kubeseal_cert = module.gitops.sealed_secrets_cert
 }
