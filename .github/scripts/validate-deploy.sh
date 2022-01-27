@@ -130,7 +130,7 @@ count=0
 until [[ $(kubectl get deployment -n "${NAMESPACE}" -l "app.kubernetes.io/instance=${INSTANCE_NAME}" | wc -l) -gt 0 ]] || [[ $count -eq 20 ]]; do
   echo "Waiting for deployment in ${NAMESPACE} with label app.kubernetes.io/instance=${INSTANCE_NAME}"
   count=$((count + 1))
-  sleep 15
+  sleep 60
 done
 
 if [[ $count -eq 20 ]]; then
