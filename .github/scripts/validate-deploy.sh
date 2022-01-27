@@ -113,7 +113,8 @@ rm -rf .testrepo
 
 sleep 180
 
-CR="platformnavigator/${COMPONENT_NAME}"
+INSTANCE_NAME="integration-navigator"
+CR="platformnavigator/${INSTANCE_NAME}"
 count=0
 until kubectl get "${CR}" -n "${NAMESPACE}" || [[ $count -eq 20 ]]; do
   echo "Waiting for ${CR} in ${NAMESPACE}"
@@ -127,7 +128,7 @@ if [[ $count -eq 20 ]]; then
   exit 1
 fi
 
-DEPLOYMENT="deployment/${COMPONENT_NAME}"
+DEPLOYMENT="deployment/${INSTANCE_NAME}"
 count=0
 until kubectl get "${DEPLOYMENT}" -n "${NAMESPACE}" || [[ $count -eq 20 ]]; do
   echo "Waiting for ${DEPLOYMENT} in ${NAMESPACE}"
