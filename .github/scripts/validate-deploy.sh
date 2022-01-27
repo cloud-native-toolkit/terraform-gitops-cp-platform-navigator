@@ -134,10 +134,10 @@ until [[ $(kubectl get deployment -n "${NAMESPACE}" -l "app.kubernetes.io/instan
 done
 
 if [[ $count -eq 20 ]]; then
-  echo "Waiting for deployment in ${NAMESPACE} with label app.kubernetes.io/instance=${INSTANCE_NAME}"
+  echo "Timed out waiting for deployment in ${NAMESPACE} with label app.kubernetes.io/instance=${INSTANCE_NAME}"
   kubectl get deployment -n "${NAMESPACE}"
   exit 1
 fi
 
 DEPLOYMENT_NAME=$(kubectl get deployment -n "${NAMESPACE}" -l "app.kubernetes.io/instance=${INSTANCE_NAME}" -o jsonpath='{range .items[]}{.metadata.name}{"\n"}{end}')
-oc rollout status deployment "${DEPLOYMENT_NAME}" -n "${NAMESPACE}"
+oc rollout status deployment "${DEPLOYMENT_NAME}" -n "${NAMESPACE}" --timeout=10m
