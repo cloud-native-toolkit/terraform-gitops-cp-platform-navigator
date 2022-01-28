@@ -31,7 +31,7 @@ versions:
         refs:
           - source: >-
               github.com/cloud-native-toolkit/terraform-cp4i-dependency-management.git
-            version: '>= 1.0.0'
+            version: '>= 0.0.0'
     variables:
       - name: gitops_config
         type: |-
