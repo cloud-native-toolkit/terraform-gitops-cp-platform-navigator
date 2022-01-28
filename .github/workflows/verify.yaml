@@ -17,7 +17,8 @@ jobs:
 
     strategy:
       matrix:
-        testcase: [ocp4_latest]
+        testcase:
+          - ocp4_latest_gitops
       #      max-parallel: 1
       fail-fast: false
 
@@ -53,11 +54,13 @@ jobs:
           TF_VAR_git_token: ${{ secrets.GIT_ADMIN_TOKEN }}
           TF_VAR_git_org: ${{ steps.variables.outputs.org }}
           TF_VAR_git_repo: ${{ steps.variables.outputs.repo }}
+          TF_VAR_bootstrap_prefix: ${{ steps.variables.outputs.repo }}
+          TF_VAR_cp_entitlement_key: ${{ secrets.CP_ENTITLEMENT_KEY }}
           TF_VAR_ibmcloud_api_key: ${{ secrets.IBMCLOUD_API_KEY }}
           IBMCLOUD_API_KEY: ${{ secrets.IBMCLOUD_API_KEY }}
 
       - name: Verify destroy on ${{ matrix.testcase }}
-        uses: ibm-garage-cloud/action-module-verify-destroy@main
+        uses: cloud-native-toolkit/action-module-verify-destroy@main
         if: ${{ always() }}
         with:
           clusterId: ${{ matrix.testcase }}
@@ -66,12 +69,29 @@ jobs:
           TF_VAR_git_token: ${{ secrets.GIT_ADMIN_TOKEN }}
           TF_VAR_git_org: ${{ steps.variables.outputs.org }}
           TF_VAR_git_repo: ${{ steps.variables.outputs.repo }}
+          TF_VAR_bootstrap_prefix: ${{ steps.variables.outputs.repo }}
+          TF_VAR_cp_entitlement_key: ${{ secrets.CP_ENTITLEMENT_KEY }}
           TF_VAR_ibmcloud_api_key: ${{ secrets.IBMCLOUD_API_KEY }}
           IBMCLOUD_API_KEY: ${{ secrets.IBMCLOUD_API_KEY }}
 
+  verifyMetadata:
+    runs-on: ubuntu-latest
+
+    env:
+      DIST_DIR: ./dist
+      PUBLISH_BRANCH: gh-pages
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - uses: cloud-native-toolkit/action-module-metadata-create@v1
+        with:
+          strict: true
+          validate: true
+
   release:
-    #    if: ${{ github.event_name == 'push' }}
-    needs: verify
+    needs: [verify, verifyMetadata]
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'push' }}
 

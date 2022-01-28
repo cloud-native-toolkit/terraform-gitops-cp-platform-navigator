@@ -60,6 +60,7 @@ variable "git_credentials" {
     token = string
   }))
   description = "The credentials for the gitops repo(s)"
+  sensitive = true
 }
 
 variable "namespace" {
@@ -82,7 +83,7 @@ variable "server_name" {
 variable "channel" {
   type        = string
   description = "The channel from which the Platform Navigator should be installed"
-  default     = "v5.0"
+  default     = "v4.1-eus"
 }
 
 variable "instance_version" {
@@ -113,4 +114,15 @@ variable "replica_count" {
   type        = number
   description = "The number of replicas to create for the platform navigator"
   default     = 2
+}
+
+variable "entitlement_key" {
+  type        = string
+  description = "The entitlement key required to access Cloud Pak images"
+  sensitive   = true
+}
+
+variable "kubeseal_cert" {
+  type        = string
+  description = "The certificate/public key used to encrypt the sealed secrets"
 }

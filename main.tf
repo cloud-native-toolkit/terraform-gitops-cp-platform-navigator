@@ -43,6 +43,7 @@ locals {
   values_file = "values-${var.server_name}.yaml"
   layer = "services"
   application_branch = "main"
+  type="instances"
   layer_config = var.gitops_config[local.layer]
 }
 
@@ -63,14 +64,50 @@ resource null_resource create_subscription_yaml {
 resource null_resource setup_subscription_gitops {
   depends_on = [null_resource.create_subscription_yaml]
 
+  triggers = {
+    bin_dir = local.bin_dir
+    name = local.subscription_name
+    namespace = var.subscription_namespace
+    yaml_dir = local.subscription_yaml_dir
+    server_name = var.server_name
+    layer = local.layer
+    type = "operators"
+    git_credentials = yamlencode(var.git_credentials)
+    gitops_config   = yamlencode(var.gitops_config)
+  }
+
   provisioner "local-exec" {
-    command = "${local.bin_dir}/igc gitops-module '${local.subscription_name}' -n '${var.subscription_namespace}' --contentDir '${local.subscription_yaml_dir}' --serverName '${var.server_name}' -l '${local.layer}' --type=operators --valueFiles='values.yaml,${local.values_file}'"
+    command = "${self.triggers.bin_dir}/igc gitops-module '${self.triggers.name}' -n '${self.triggers.namespace}' --contentDir '${self.triggers.yaml_dir}' --serverName '${self.triggers.server_name}' -l '${self.triggers.layer}' --type='${self.triggers.type}' --valueFiles='values.yaml,${local.values_file}'"
 
     environment = {
-      GIT_CREDENTIALS = yamlencode(var.git_credentials)
-      GITOPS_CONFIG   = yamlencode(var.gitops_config)
+      GIT_CREDENTIALS = nonsensitive(self.triggers.git_credentials)
+      GITOPS_CONFIG   = self.triggers.gitops_config
     }
   }
+
+  provisioner "local-exec" {
+    when = destroy
+    command = "${self.triggers.bin_dir}/igc gitops-module '${self.triggers.name}' -n '${self.triggers.namespace}' --delete --contentDir '${self.triggers.yaml_dir}' --serverName '${self.triggers.server_name}' -l '${self.triggers.layer}' --type '${self.triggers.type}'"
+
+    environment = {
+      GIT_CREDENTIALS = nonsensitive(self.triggers.git_credentials)
+      GITOPS_CONFIG   = self.triggers.gitops_config
+    }
+  }
+}
+
+module pull_secret {
+  source = "github.com/cloud-native-toolkit/terraform-gitops-pull-secret"
+
+  gitops_config = var.gitops_config
+  git_credentials = var.git_credentials
+  server_name = var.server_name
+  kubeseal_cert = var.kubeseal_cert
+  namespace = var.namespace
+  docker_username = "cp"
+  docker_password = var.entitlement_key
+  docker_server   = "cp.icr.io"
+  secret_name     = "ibm-entitlement-key"
 }
 
 resource null_resource create_instance_yaml {
@@ -87,12 +124,34 @@ resource null_resource create_instance_yaml {
 resource null_resource setup_instance_gitops {
   depends_on = [null_resource.create_instance_yaml]
 
+  triggers = {
+    bin_dir = local.bin_dir
+    name = local.instance_name
+    namespace = var.namespace
+    yaml_dir = local.instance_yaml_dir
+    server_name = var.server_name
+    layer = local.layer
+    type = local.type
+    git_credentials = yamlencode(var.git_credentials)
+    gitops_config   = yamlencode(var.gitops_config)
+  }
+
   provisioner "local-exec" {
-    command = "${local.bin_dir}/igc gitops-module '${local.instance_name}' -n '${var.namespace}' --contentDir '${local.instance_yaml_dir}' --serverName '${var.server_name}' -l '${local.layer}' --type=instances --valueFiles='values.yaml,${local.values_file}'"
+    command = "${self.triggers.bin_dir}/igc gitops-module '${self.triggers.name}' -n '${self.triggers.namespace}' --contentDir '${self.triggers.yaml_dir}' --serverName '${self.triggers.server_name}' -l '${self.triggers.layer}' --type=${self.triggers.type} --valueFiles='values.yaml,${local.values_file}'"
 
     environment = {
-      GIT_CREDENTIALS = nonsensitive(yamlencode(var.git_credentials))
-      GITOPS_CONFIG   = yamlencode(var.gitops_config)
+      GIT_CREDENTIALS = nonsensitive(self.triggers.git_credentials)
+      GITOPS_CONFIG   = self.triggers.gitops_config
+    }
+  }
+
+  provisioner "local-exec" {
+    when = destroy
+    command = "${self.triggers.bin_dir}/igc gitops-module '${self.triggers.name}' -n '${self.triggers.namespace}' --delete --contentDir '${self.triggers.yaml_dir}' --serverName '${self.triggers.server_name}' -l '${self.triggers.layer}' --type '${self.triggers.type}'"
+
+    environment = {
+      GIT_CREDENTIALS = nonsensitive(self.triggers.git_credentials)
+      GITOPS_CONFIG   = self.triggers.gitops_config
     }
   }
 }

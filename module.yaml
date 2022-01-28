@@ -24,6 +24,10 @@ versions:
         refs:
           - source: github.com/cloud-native-toolkit/terraform-gitops-cp-catalogs.git
             version: ">= 1.0.0"
+      - id: dep-manager
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-cp4i-dependency-management.git
+            version: ">= 1.0.0"
     variables:
       - name: gitops_config
         moduleRef:
@@ -37,6 +41,10 @@ versions:
         moduleRef:
           id: gitops
           output: server_name
+      - name: kubeseal_cert
+        moduleRef:
+          id: gitops
+          output: sealed_secrets_cert
       - name: namespace
         moduleRef:
           id: namespace
@@ -45,3 +53,19 @@ versions:
         moduleRef:
           id: catalogs
           output: catalog_ibmoperators
+      - name: entitlement_key
+        moduleRef:
+          id: catalogs
+          output: entitlement_key
+      - name: channel
+        moduleRef:
+          id: dep-manager
+          output: platform_navigator.channel
+      - name: instance_version
+        moduleRef:
+          id: dep-manager
+          output: platform_navigator.version
+      - name: license
+        moduleRef:
+          id: dep-manager
+          output: platform_navigator.license
