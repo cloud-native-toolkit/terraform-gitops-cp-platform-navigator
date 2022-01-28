@@ -140,4 +140,5 @@ if [[ $count -eq 20 ]]; then
 fi
 
 DEPLOYMENT_NAME=$(kubectl get deployment -n "${NAMESPACE}" -l "app.kubernetes.io/instance=${INSTANCE_NAME}" -o jsonpath='{range .items[]}{.metadata.name}{"\n"}{end}')
+echo "Waiting for deployment rollout: ${DEPLOYMENT_NAME}"
 oc rollout status deployment "${DEPLOYMENT_NAME}" -n "${NAMESPACE}" --timeout=10m
