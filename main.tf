@@ -102,7 +102,7 @@ module pull_secret {
   gitops_config = var.gitops_config
   git_credentials = var.git_credentials
   server_name = var.server_name
-  kubeseal_cert = var.se
+  kubeseal_cert = var.kubeseal_cert
   namespace = var.namespace
   docker_username = "cp"
   docker_password = var.entitlement_key
