@@ -1,8 +1,10 @@
 
 # Resource Group Variables
+#gowtham commented resource_group_name variable while testing in TechZone Cluster
+
 variable "resource_group_name" {
-  type        = string
-  description = "Existing resource group where the IKS cluster will be provisioned."
+ type        = string
+ description = "Existing resource group where the IKS cluster will be provisioned."
 }
 
 variable "ibmcloud_api_key" {
@@ -87,4 +89,20 @@ variable "kubeseal_namespace" {
 }
 
 variable "cp_entitlement_key" {
+}
+
+#Gowtham.. Aded the below one as required variable
+variable "login_token" {
+
+}
+variable "gitops-cp-platform-navigator" {
+type = string
+description = "The namespace where Platform Navigator will be created"
+default = "gitops-cp-platform-navigator"
+}
+
+variable "storageclass" {
+  type=string
+  description = "RWX storage required for PlatformNavigator"
+  
 }

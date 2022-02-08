@@ -89,7 +89,7 @@ variable "channel" {
 variable "instance_version" {
   type        = string
   description = "The version of the Platform Navigator should be installed"
-  default     = "2020.4.1-eus"
+  default     = ""
 }
 
 variable "license" {
@@ -125,4 +125,17 @@ variable "entitlement_key" {
 variable "kubeseal_cert" {
   type        = string
   description = "The certificate/public key used to encrypt the sealed secrets"
+}
+
+#Gowtham
+# variable "gitops-cp-platform-navigator" {
+# type = string
+# description = "The namespace where Platform Navigator will be created"
+# default = "gitops-cp-platform-navigator"
+# }
+
+variable "storageclass" {
+  type = string
+  description = "For Platformnavigator we require RWX storage class."
+  
 }

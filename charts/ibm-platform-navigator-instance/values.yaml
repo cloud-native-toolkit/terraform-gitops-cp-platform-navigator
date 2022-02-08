@@ -9,4 +9,10 @@ ibm-platform-navigator-instance:
         license: L-RJON-C7QG3S
       mqDashboard: true
       version: 2021.4.1
+      storage:
+        # This class is applicable for ROKS on IBM Cloud on ClassicStorage
+        class: ibmc-file-gold-gid
+        # This class is applicable for ROKS on IBM Cloud on VPC
+        #class: "TBD"
+
       replicas: 2   

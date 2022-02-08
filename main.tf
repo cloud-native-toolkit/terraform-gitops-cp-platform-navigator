@@ -35,6 +35,9 @@ locals {
           }
           mqDashboard = true
           version = var.instance_version
+          storage={
+            class=var.storageclass
+          }
           replicas = var.replica_count
         }
       }
