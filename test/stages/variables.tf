@@ -92,9 +92,6 @@ variable "cp_entitlement_key" {
 }
 
 #Gowtham.. Aded the below one as required variable
-variable "login_token" {
-
-}
 variable "gitops-cp-platform-navigator" {
 type = string
 description = "The namespace where Platform Navigator will be created"
@@ -104,5 +101,5 @@ default = "gitops-cp-platform-navigator"
 variable "storageclass" {
   type=string
   description = "RWX storage required for PlatformNavigator"
-  
+  default="portworx-rwx-gp-sc"
 }

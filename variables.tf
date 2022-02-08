@@ -137,6 +137,7 @@ variable "kubeseal_cert" {
 variable "storageclass" {
   type = string
   description = "For Platformnavigator we require RWX storage class."
-  default="ibmc-file-gold-gid"
+  #for VPC based cluster configured with PortWorx
+  default="portworx-rwx-gp-sc"
   
 }

@@ -11,8 +11,8 @@ ibm-platform-navigator-instance:
       version: 2021.4.1
       storage:
         # This class is applicable for ROKS on IBM Cloud on ClassicStorage
-        class: ibmc-file-gold-gid
+        #class: ibmc-file-gold-gid
         # This class is applicable for ROKS on IBM Cloud on VPC
-        #class: "TBD"
+        class: "portworx-rwx-gp-sc"
 
       replicas: 2   
