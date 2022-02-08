@@ -3,8 +3,7 @@ module "gitops_namespace" {
 
   gitops_config = module.gitops.gitops_config
   git_credentials = module.gitops.git_credentials
-  #Gowtham: Instance of the CP4i Platform navigator to be created in gitops-cp4i
-  name = var.gitops-cp-platform-navigator
+  name = var.namespace
 
   
 

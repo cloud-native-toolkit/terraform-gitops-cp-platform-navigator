@@ -91,13 +91,7 @@ variable "kubeseal_namespace" {
 variable "cp_entitlement_key" {
 }
 
-#Gowtham.. Aded the below one as required variable
-variable "gitops-cp-platform-navigator" {
-type = string
-description = "The namespace where Platform Navigator will be created"
-default = "gitops-cp-platform-navigator"
-}
-
+#Gowtham.. Added the below one as required variable
 variable "storageclass" {
   type=string
   description = "RWX storage required for PlatformNavigator"
