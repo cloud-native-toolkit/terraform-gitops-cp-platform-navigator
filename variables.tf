@@ -128,11 +128,7 @@ variable "kubeseal_cert" {
 }
 
 #Gowtham
-# variable "gitops-cp-platform-navigator" {
-# type = string
-# description = "The namespace where Platform Navigator will be created"
-# default = "gitops-cp-platform-navigator"
-# }
+#Added the below for storageclass
 
 variable "storageclass" {
   type = string
