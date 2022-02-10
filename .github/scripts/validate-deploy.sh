@@ -117,7 +117,7 @@ count=0
 until kubectl get "${CR}" -n "${NAMESPACE}" || [[ $count -eq 20 ]]; do
   echo "Waiting for ${CR} in ${NAMESPACE}"
   count=$((count + 1))
-  sleep 15
+  sleep 30
 done
 
 if [[ $count -eq 20 ]]; then
@@ -127,13 +127,13 @@ if [[ $count -eq 20 ]]; then
 fi
 
 count=0
-until [[ $(kubectl get deployment -n "${NAMESPACE}" -l "app.kubernetes.io/instance=${INSTANCE_NAME}" | wc -l) -gt 0 ]] || [[ $count -eq 20 ]]; do
+until [[ $(kubectl get deployment -n "${NAMESPACE}" -l "app.kubernetes.io/instance=${INSTANCE_NAME}" | wc -l) -gt 0 ]] || [[ $count -eq 60 ]]; do
   echo "Waiting for deployment in ${NAMESPACE} with label app.kubernetes.io/instance=${INSTANCE_NAME}"
   count=$((count + 1))
   sleep 60
 done
 
-if [[ $count -eq 20 ]]; then
+if [[ $count -eq 60 ]]; then
   echo "Timed out waiting for deployment in ${NAMESPACE} with label app.kubernetes.io/instance=${INSTANCE_NAME}"
   kubectl get deployment -n "${NAMESPACE}"
   exit 1
