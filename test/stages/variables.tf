@@ -1,4 +1,3 @@
-
 variable cluster_username { 
   type        = string
   description = "The username for AWS access"
@@ -7,16 +6,6 @@ variable cluster_username {
 variable "cluster_password" {
   type        = string
   description = "The password for AWS access"
-}
-
-variable "resource_group_name" {
- type        = string
- description = "Existing resource group where the IKS cluster will be provisioned."
-}
-
-variable "ibmcloud_api_key" {
-  type        = string
-  description = "The api key for IBM Cloud access"
 }
 
 variable "server_url" {
@@ -48,18 +37,6 @@ variable "cluster_exists" {
   type        = string
   description = "Flag indicating if the cluster already exists (true or false)"
   default     = "true"
-}
-
-variable "name_prefix" {
-  type        = string
-  description = "Prefix name that should be used for the cluster and services. If not provided then resource_group_name will be used"
-  default     = ""
-}
-
-variable "vpc_cluster" {
-  type        = bool
-  description = "Flag indicating that this is a vpc cluster"
-  default     = false
 }
 
 variable "git_token" {
@@ -98,7 +75,7 @@ variable "kubeseal_namespace" {
 variable "cp_entitlement_key" {
 }
 
-#Gowtham.. Added the below one as required variable
+# Added the below one as required variable
 variable "storageclass" {
   type=string
   description = "RWX storage required for PlatformNavigator"
