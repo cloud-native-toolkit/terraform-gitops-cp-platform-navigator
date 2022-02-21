@@ -127,8 +127,8 @@ variable "kubeseal_cert" {
   description = "The certificate/public key used to encrypt the sealed secrets"
 }
 
-#Gowtham
-#Added the below for storageclass
+
+#Added the below for storageclass (RWX)
 
 variable "storageclass" {
   type = string
