@@ -1,6 +1,13 @@
 
-# Resource Group Variables
-#gowtham commented resource_group_name variable while testing in TechZone Cluster
+variable cluster_username { 
+  type        = string
+  description = "The username for AWS access"
+}
+
+variable "cluster_password" {
+  type        = string
+  description = "The password for AWS access"
+}
 
 variable "resource_group_name" {
  type        = string
