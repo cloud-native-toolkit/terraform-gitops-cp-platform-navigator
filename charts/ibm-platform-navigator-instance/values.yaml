@@ -6,7 +6,13 @@ ibm-platform-navigator-instance:
     spec:
       license:
         accept: true
-        license: L-RJON-BUVMQX
+        license: L-RJON-C7QG3S
       mqDashboard: true
-      version: 2020.4.1-eus
+      version: 2021.4.1
+      storage:
+        # This class is applicable for ROKS on IBM Cloud on ClassicStorage
+        #class: ibmc-file-gold-gid
+        # This class is applicable for ROKS on IBM Cloud on VPC
+        class: "portworx-rwx-gp-sc"
+
       replicas: 2   

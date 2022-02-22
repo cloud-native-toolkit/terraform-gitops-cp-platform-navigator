@@ -89,7 +89,7 @@ variable "channel" {
 variable "instance_version" {
   type        = string
   description = "The version of the Platform Navigator should be installed"
-  default     = "2020.4.1-eus"
+  default     = ""
 }
 
 variable "license" {
@@ -125,4 +125,15 @@ variable "entitlement_key" {
 variable "kubeseal_cert" {
   type        = string
   description = "The certificate/public key used to encrypt the sealed secrets"
+}
+
+
+#Added the below for storageclass (RWX)
+
+variable "storageclass" {
+  type = string
+  description = "For Platformnavigator we require RWX storage class."
+  #for VPC based cluster configured with PortWorx
+  default="portworx-rwx-gp-sc"
+  
 }

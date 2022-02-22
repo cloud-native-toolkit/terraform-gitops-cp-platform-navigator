@@ -35,6 +35,9 @@ locals {
           }
           mqDashboard = true
           version = var.instance_version
+          storage={
+            class=var.storageclass
+          }
           replicas = var.replica_count
         }
       }
@@ -51,6 +54,7 @@ module setup_clis {
   source = "github.com/cloud-native-toolkit/terraform-util-clis.git"
 }
 
+#This one is for creating subscription yaml
 resource null_resource create_subscription_yaml {
   provisioner "local-exec" {
     command = "${path.module}/scripts/create-yaml.sh '${local.subscription_name}' '${local.subscription_chart_dir}' '${local.subscription_yaml_dir}' '${local.values_file}'"

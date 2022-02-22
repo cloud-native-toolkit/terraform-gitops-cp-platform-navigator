@@ -1,5 +1,5 @@
 module "gitops_module" {
-  source = "./module"
+   source = "./module"
 
   gitops_config = module.gitops.gitops_config
   git_credentials = module.gitops.git_credentials
@@ -11,4 +11,8 @@ module "gitops_module" {
   license = module.cp4i-dependencies.platform_navigator.license
   entitlement_key = module.cp_catalogs.entitlement_key
   kubeseal_cert = module.gitops.sealed_secrets_cert
+  #Gowtham: Instance of the CP4i Platform navigator to be created in gitops-cp4i
+  storageclass = var.storageclass
 }
+
+
