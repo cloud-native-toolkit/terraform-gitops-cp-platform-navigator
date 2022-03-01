@@ -1,6 +1,9 @@
 # Platform Navigator gitops module
 
-Module to populate a gitops repository with the resources to deploy Platorm Navigator from IBM Cloud Pak for Integration
+Module to populate a gitops repository with the resources to deploy Platorm Navigator from IBM Cloud Pak for Integration. This is the special type of module
+which creates the following
+  1. PlatformNavigator Operator
+  2. Instance of PlatformNavigator
 
 ## Software dependencies
 
@@ -21,6 +24,9 @@ This module makes use of the output from other modules:
 - GitOps - github.com/cloud-native-toolkit/terraform-tools-gitops.git
 - Namespace - github.com/cloud-native-toolkit/terraform-gitops-namespace.git
 - Catalogs - github.com/cloud-native-toolkit/terraform-gitops-cp-catalogs.git
+- Cp4i-Dependency - github.com/cloud-native-toolkit/terraform-cp4i-dependency-management.git
+
+Please note, This specific module has a dependency on RWX AccessMode StorageClass. Normally If we do not specify 'StorageClass' while deploying workload, the storageclass patchced with 'default' will be assigned. Hence please double check the RWX supported storage class is available before proceed.
 
 ## Example usage
 
