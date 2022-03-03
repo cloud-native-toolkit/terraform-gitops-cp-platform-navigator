@@ -114,20 +114,20 @@ rm -rf .testrepo
 INSTANCE_NAME="integration-navigator"
 CR="platformnavigator/${INSTANCE_NAME}"
 count=0
-until kubectl get "${CR}" -n "${NAMESPACE}" || [[ $count -eq 20 ]]; do
+until kubectl get "${CR}" -n "${NAMESPACE}" || [[ $count -eq 30 ]]; do
   echo "Waiting for ${CR} in ${NAMESPACE}"
   count=$((count + 1))
   sleep 30
 done
 
-if [[ $count -eq 20 ]]; then
+if [[ $count -eq 30 ]]; then
   echo "Timed out waiting for ${CR} in ${NAMESPACE}"
   kubectl get platformnavigator -n "${NAMESPACE}"
   exit 1
 fi
 
 count=0
-until [[ $(kubectl get deployment -n "${NAMESPACE}" -l "app.kubernetes.io/instance=${INSTANCE_NAME}" | wc -l) -gt 0 ]] || [[ $count -eq 60 ]]; do
+until [[ $(kubectl get deployment -n "${NAMESPACE}" -l "app.kubernetes.io/instance=${INSTANCE_NAME}" | wc -l) -gt 0 ]] || [[ $count -eq 90 ]]; do
   echo "Waiting for deployment in ${NAMESPACE} with label app.kubernetes.io/instance=${INSTANCE_NAME}"
   count=$((count + 1))
   sleep 60
