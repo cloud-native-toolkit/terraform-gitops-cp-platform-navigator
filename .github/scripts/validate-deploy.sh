@@ -54,13 +54,13 @@ fi
 
 SUBSCRIPTION="subscription/${COMPONENT_NAME}"
 count=0
-until kubectl get "${SUBSCRIPTION}" -n "${NAMESPACE}" || [[ $count -eq 20 ]]; do
+until kubectl get "${SUBSCRIPTION}" -n "${NAMESPACE}" || [[ $count -eq 60 ]]; do
   echo "Waiting for ${SUBSCRIPTION} in ${NAMESPACE}"
   count=$((count + 1))
-  sleep 15
+  sleep 60
 done
 
-if [[ $count -eq 20 ]]; then
+if [[ $count -eq 60 ]]; then
   echo "Timed out waiting for ${SUBSCRIPTION} in ${NAMESPACE}"
   kubectl get subscription -n "${NAMESPACE}"
   exit 1
@@ -68,13 +68,13 @@ fi
 
 CSV="ibm-integration-platform-navigator"
 count=0
-until [[ $(kubectl get csv -n "${NAMESPACE}" -l operators.coreos.com/${CSV}.${NAMESPACE}="" -o=jsonpath='{range .items[]}{.metadata.name}{"\n"}{end}' | wc -l) -gt 0 ]] || [[ $count -eq 20 ]]; do
+until [[ $(kubectl get csv -n "${NAMESPACE}" -l operators.coreos.com/${CSV}.${NAMESPACE}="" -o=jsonpath='{range .items[]}{.metadata.name}{"\n"}{end}' | wc -l) -gt 0 ]] || [[ $count -eq 60 ]]; do
   echo "Waiting for csv ${CSV} in ${NAMESPACE}"
   count=$((count + 1))
-  sleep 15
+  sleep 60
 done
 
-if [[ $count -eq 20 ]]; then
+if [[ $count -eq 60 ]]; then
   echo "Timed out waiting for ${CSV} in ${NAMESPACE}"
   kubectl get csv -n "${NAMESPACE}"
   exit 1
