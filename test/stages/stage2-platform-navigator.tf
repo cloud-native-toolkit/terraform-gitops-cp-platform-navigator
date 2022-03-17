@@ -12,7 +12,7 @@ module "gitops_module" {
   entitlement_key = module.cp_catalogs.entitlement_key
   kubeseal_cert = module.gitops.sealed_secrets_cert
   #Gowtham: Instance of the CP4i Platform navigator to be created in gitops-cp4i
-  storageclass = var.storageclass
+  storageclass = "portworx-rwx-gp-sc"
 }
 
 
