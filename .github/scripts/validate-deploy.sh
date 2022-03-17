@@ -74,7 +74,7 @@ until [[ $(kubectl get csv -n "${NAMESPACE}" -l operators.coreos.com/${CSV}.${NA
   count=$((count + 1))
   sleep 60
 done
-
+ 
 if [[ $count -eq 60 ]]; then
   echo "Timed out waiting for ${CSV} in ${NAMESPACE}"
   kubectl get csv -n "${NAMESPACE}"
