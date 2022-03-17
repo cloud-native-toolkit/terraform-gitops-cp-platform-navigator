@@ -18,23 +18,24 @@ BRANCH="main"
 SERVER_NAME="default"
 TYPE="operators" 
 
-COMPONENT_NAME="ibm-platform-navigator-operator"
+COMPONENT_NAME="ibm-platform-navigator"
+OPERATOR_SUFFIX="operator"
 
-if [[ ! -f "argocd/2-services/cluster/${SERVER_NAME}/${TYPE}/${NAMESPACE}-${COMPONENT_NAME}.yaml" ]]; then
-  echo "ArgoCD config missing - argocd/2-services/cluster/${SERVER_NAME}/${TYPE}/${NAMESPACE}-${COMPONENT_NAME}.yaml"
+if [[ ! -f "argocd/2-services/cluster/${SERVER_NAME}/${TYPE}/${NAMESPACE}-${COMPONENT_NAME}-${OPERATOR_SUFFIX}.yaml" ]]; then
+  echo "ArgoCD config missing - argocd/2-services/cluster/${SERVER_NAME}/${TYPE}/${NAMESPACE}-${COMPONENT_NAME}-${OPERATOR_SUFFIX}.yaml"
   exit 1
 fi
 
-echo "Printing argocd/2-services/cluster/${SERVER_NAME}/${TYPE}/${NAMESPACE}-${COMPONENT_NAME}.yaml"
-cat "argocd/2-services/cluster/${SERVER_NAME}/${TYPE}/${NAMESPACE}-${COMPONENT_NAME}.yaml"
+echo "Printing argocd/2-services/cluster/${SERVER_NAME}/${TYPE}/${NAMESPACE}-${COMPONENT_NAME}-${OPERATOR_SUFFIX}.yaml"
+cat "argocd/2-services/cluster/${SERVER_NAME}/${TYPE}/${NAMESPACE}-${COMPONENT_NAME}-${OPERATOR_SUFFIX}.yaml"
 
-if [[ ! -f "payload/2-services/namespace/${NAMESPACE}/${COMPONENT_NAME}/values.yaml" ]]; then
-  echo "Application values not found - payload/2-services/namespace/${NAMESPACE}/${COMPONENT_NAME}/values.yaml"
+if [[ ! -f "payload/2-services/namespace/${NAMESPACE}/${COMPONENT_NAME}-${OPERATOR_SUFFIX}/values.yaml" ]]; then
+  echo "Application values not found - payload/2-services/namespace/${NAMESPACE}/${COMPONENT_NAME}-${OPERATOR_SUFFIX}/values.yaml"
   exit 1
 fi
 
-echo "Printing payload/2-services/namespace/${NAMESPACE}/${COMPONENT_NAME}/values.yaml"
-cat "payload/2-services/namespace/${NAMESPACE}/${COMPONENT_NAME}/values.yaml"
+echo "Printing payload/2-services/namespace/${NAMESPACE}/${COMPONENT_NAME}-${OPERATOR_SUFFIX}/values.yaml"
+cat "payload/2-services/namespace/${NAMESPACE}/${COMPONENT_NAME}-${OPERATOR_SUFFIX}/values.yaml"
 
 
 count=0
@@ -51,7 +52,7 @@ else
   echo "Found namespace: ${NAMESPACE}. Sleeping for 30 seconds to wait for everything to settle down"
   sleep 30
 fi
-
+COMPONENT_NAME="ibm-integration-platform-navigator"
 SUBSCRIPTION="subscription/${COMPONENT_NAME}"
 count=0
 until kubectl get "${SUBSCRIPTION}" -n "${NAMESPACE}" || [[ $count -eq 60 ]]; do
