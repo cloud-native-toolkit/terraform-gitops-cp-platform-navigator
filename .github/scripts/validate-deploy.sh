@@ -18,7 +18,7 @@ BRANCH="main"
 SERVER_NAME="default"
 TYPE="operators" 
 
-COMPONENT_NAME="ibm-platform-navigator"
+COMPONENT_NAME="ibm-platform-navigator-operator"
 
 if [[ ! -f "argocd/2-services/cluster/${SERVER_NAME}/${TYPE}/${NAMESPACE}-${COMPONENT_NAME}.yaml" ]]; then
   echo "ArgoCD config missing - argocd/2-services/cluster/${SERVER_NAME}/${TYPE}/${NAMESPACE}-${COMPONENT_NAME}.yaml"
