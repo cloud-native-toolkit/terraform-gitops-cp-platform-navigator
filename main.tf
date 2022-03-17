@@ -1,49 +1,48 @@
 locals {
   base_name     = "ibm-platform-navigator"
-  subscription_name = local.base_name
+  subscription_name = "${local.base_name}-operator"
   instance_name = "${local.base_name}-instance"
   bin_dir       = module.setup_clis.bin_dir
-  subscription_chart_dir = "${path.module}/charts/ibm-platform-navigator"
+  subscription_chart_dir = "${path.module}/charts/ibm-platform-navigator-operator"
   subscription_yaml_dir = "${path.cwd}/.tmp/${local.base_name}/chart/${local.subscription_name}"
+  //subscription_yaml_dir = "${path.cwd}/.tmp/ibm-platform-navigator/chart/ibm-platform-navigator-operator"
   instance_chart_dir = "${path.module}/charts/ibm-platform-navigator-instance"
   instance_yaml_dir     = "${path.cwd}/.tmp/${local.base_name}/chart/${local.instance_name}"
-  subscription_values_content = {
-    "ibm-platform-navigator" = {
-      subscriptions = {
-        platformnavigator = {
-          name = local.subscription_name
-          subscription = {
-            channel = var.channel
-            installPlanApproval = "Automatic"
-            name = "ibm-integration-platform-navigator"
-            source = var.catalog
-            sourceNamespace = var.catalog_namespace
-          }
-        }
-      }
-    }
-  }
-  instance_values_content = {
-    "ibm-platform-navigator-instance" = {
-      ibmplatformnavigator = {
-        name = "integration-navigator"
-        spec = {
-          license = {
-            accept = true
-            license = var.license
+  //instance_yaml_dir     = "${path.cwd}/.tmp/ibm-platform-navigator/chart/ibm-platform-navigator-instance"
 
-          }
-          mqDashboard = true
-          version = var.instance_version
-          storage={
-            class=var.storageclass
-          }
-          replicas = var.replica_count
+  subscription_values_content = {
+    "ibm_platform_navigator_operator" = { 
+      name="ibm-integration-platform-navigator"
+      subscription = {
+        channel=var.channel
+        installPlanApproval="Automatic"
+        name="ibm-integration-platform-navigator"
+        source="ibm-operator-catalog"
+        sourceNamespace="openshift-marketplace"
+    }
+   }
+  }
+
+
+  instance_values_content = {
+    "ibm_platform_navigator_instance" = {
+      name="integration-navigator"
+      spec={
+        license={
+          accept= true
+          license= var.license
         }
+        mqDashboard=true
+        version=var.instance_version
+        storage={
+          class=var.storageclass
+        }
+        replicas=var.replica_count
       }
     }
+
   }
-  values_file = "values-${var.server_name}.yaml"
+  values_file = "values.yaml"
   layer = "services"
   application_branch = "main"
   type="instances"
@@ -58,7 +57,7 @@ module setup_clis {
 resource null_resource create_subscription_yaml {
   provisioner "local-exec" {
     command = "${path.module}/scripts/create-yaml.sh '${local.subscription_name}' '${local.subscription_chart_dir}' '${local.subscription_yaml_dir}' '${local.values_file}'"
-
+    
     environment = {
       VALUES_CONTENT = yamlencode(local.subscription_values_content)
     }
@@ -81,7 +80,7 @@ resource null_resource setup_subscription_gitops {
   }
 
   provisioner "local-exec" {
-    command = "${self.triggers.bin_dir}/igc gitops-module '${self.triggers.name}' -n '${self.triggers.namespace}' --contentDir '${self.triggers.yaml_dir}' --serverName '${self.triggers.server_name}' -l '${self.triggers.layer}' --type='${self.triggers.type}' --valueFiles='values.yaml,${local.values_file}'"
+    command = "${self.triggers.bin_dir}/igc gitops-module '${self.triggers.name}' -n '${self.triggers.namespace}' --contentDir '${self.triggers.yaml_dir}' --serverName '${self.triggers.server_name}' -l '${self.triggers.layer}' --type='${self.triggers.type}' --valueFiles='${local.values_file}'"
 
     environment = {
       GIT_CREDENTIALS = nonsensitive(self.triggers.git_credentials)
@@ -141,7 +140,7 @@ resource null_resource setup_instance_gitops {
   }
 
   provisioner "local-exec" {
-    command = "${self.triggers.bin_dir}/igc gitops-module '${self.triggers.name}' -n '${self.triggers.namespace}' --contentDir '${self.triggers.yaml_dir}' --serverName '${self.triggers.server_name}' -l '${self.triggers.layer}' --type=${self.triggers.type} --valueFiles='values.yaml,${local.values_file}'"
+    command = "${self.triggers.bin_dir}/igc gitops-module '${self.triggers.name}' -n '${self.triggers.namespace}' --contentDir '${self.triggers.yaml_dir}' --serverName '${self.triggers.server_name}' -l '${self.triggers.layer}' --type=${self.triggers.type} --valueFiles='${local.values_file}'"
 
     environment = {
       GIT_CREDENTIALS = nonsensitive(self.triggers.git_credentials)

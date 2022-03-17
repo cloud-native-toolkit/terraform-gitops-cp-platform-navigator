@@ -83,7 +83,7 @@ variable "server_name" {
 variable "channel" {
   type        = string
   description = "The channel from which the Platform Navigator should be installed"
-  default     = "v4.1-eus"
+  default     = ""
 }
 
 variable "instance_version" {

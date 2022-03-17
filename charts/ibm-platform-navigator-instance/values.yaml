@@ -1,18 +1,11 @@
-global: {}
-
-ibm-platform-navigator-instance:
-  ibmplatformnavigator:
-    name: integration-navigator
-    spec:
-      license:
-        accept: true
-        license: L-RJON-C7QG3S
-      mqDashboard: true
-      version: 2021.4.1
-      storage:
-        # This class is applicable for ROKS on IBM Cloud on ClassicStorage
-        #class: ibmc-file-gold-gid
-        # This class is applicable for ROKS on IBM Cloud on VPC
-        class: "portworx-rwx-gp-sc"
-
-      replicas: 2   
+ibm_platform_navigator_instance:
+  name: integration-navigator
+  spec:
+    license:
+      accept: true
+      license: L-RJON-C7QG3S
+    mqDashboard: true
+    version: 2021.4.1
+    storage:
+      class: ibmc-file-gold-gid
+    replicas: 1

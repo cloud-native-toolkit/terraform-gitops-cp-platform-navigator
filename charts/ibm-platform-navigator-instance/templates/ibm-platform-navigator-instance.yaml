@@ -1,0 +1,12 @@
+apiVersion: integration.ibm.com/v1beta1
+kind: PlatformNavigator
+metadata:
+  name: {{ .Values.ibm_platform_navigator_instance.name}}
+spec:
+  license:
+    {{- toYaml .Values.ibm_platform_navigator_instance.spec.license | nindent 4 }}
+  mqDashboard: {{ .Values.ibm_platform_navigator_instance.spec.mqDashboard }}
+  version: {{ .Values.ibm_platform_navigator_instance.spec.version }}
+  storage:
+    class: {{ .Values.ibm_platform_navigator_instance.spec.storage.class }}
+  replicas: {{ .Values.ibm_platform_navigator_instance.spec.replicas }}
