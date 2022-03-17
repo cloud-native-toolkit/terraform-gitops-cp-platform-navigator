@@ -16,7 +16,7 @@ find . -name "*"
 NAMESPACE="openshift-operators"
 BRANCH="main"
 SERVER_NAME="default"
-TYPE="operators"
+TYPE="operators" 
 
 COMPONENT_NAME="ibm-platform-navigator"
 
