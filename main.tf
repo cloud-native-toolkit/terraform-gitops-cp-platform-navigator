@@ -1,14 +1,14 @@
 locals {
   base_name     = "ibm-platform-navigator"
-  subscription_name = local.base_name
+  subscription_name = "${local.base_name}-operator"
   instance_name = "${local.base_name}-instance"
   bin_dir       = module.setup_clis.bin_dir
-  subscription_chart_dir = "${path.module}/charts/ibm-platform-navigator-opertor"
-  //subscription_yaml_dir = "${path.cwd}/.tmp/${local.base_name}/chart/${local.subscription_name}"
-  subscription_yaml_dir = "${path.cwd}/.tmp/ibm-platform-navigator/chart/ibm-platform-navigator-opertor"
+  subscription_chart_dir = "${path.module}/charts/ibm-platform-navigator-operator"
+  subscription_yaml_dir = "${path.cwd}/.tmp/${local.base_name}/chart/${local.subscription_name}"
+  //subscription_yaml_dir = "${path.cwd}/.tmp/ibm-platform-navigator/chart/ibm-platform-navigator-operator"
   instance_chart_dir = "${path.module}/charts/ibm-platform-navigator-instance"
-  //instance_yaml_dir     = "${path.cwd}/.tmp/${local.base_name}/chart/${local.instance_name}"
-  instance_yaml_dir     = "${path.cwd}/.tmp/ibm-platform-navigator/chart/ibm-platform-navigator-instance"
+  instance_yaml_dir     = "${path.cwd}/.tmp/${local.base_name}/chart/${local.instance_name}"
+  //instance_yaml_dir     = "${path.cwd}/.tmp/ibm-platform-navigator/chart/ibm-platform-navigator-instance"
 
   subscription_values_content = {
     "ibm_platform_navigator_operator" = { 
