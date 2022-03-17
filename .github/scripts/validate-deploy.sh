@@ -110,7 +110,8 @@ cat "payload/2-services/namespace/${NAMESPACE}/${COMPONENT_NAME}/values.yaml"
 
 cd ..
 rm -rf .testrepo
-
+#For cooling period
+sleep 300
 INSTANCE_NAME="integration-navigator"
 CR="platformnavigator/${INSTANCE_NAME}"
 count=0
