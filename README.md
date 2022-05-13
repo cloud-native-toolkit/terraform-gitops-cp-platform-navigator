@@ -1,5 +1,6 @@
 # Platform Navigator gitops module
 
+
 Module to populate a gitops repository with the resources to deploy Platorm Navigator from IBM Cloud Pak for Integration. This is the special type of module
 which creates the following
   1. PlatformNavigator Operator
