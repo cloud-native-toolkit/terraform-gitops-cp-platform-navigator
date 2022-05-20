@@ -20,6 +20,10 @@ versions:
         refs:
           - source: github.com/cloud-native-toolkit/terraform-gitops-cp-catalogs.git
             version: ">= 1.0.0"
+      - id: ibm-common-services
+        ref:
+          - source: github.com/cloud-native-toolkit/terraform-gitops-cp-foundational-services
+            version: ">= 1.0.0"
       - id: dep-manager
         refs:
           - source: github.com/cloud-native-toolkit/terraform-cp4i-dependency-management.git
