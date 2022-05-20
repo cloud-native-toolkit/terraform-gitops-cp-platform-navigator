@@ -8,7 +8,7 @@ locals {
   //subscription_yaml_dir = "${path.cwd}/.tmp/ibm-platform-navigator/chart/ibm-platform-navigator-operator"
   instance_chart_dir = "${path.module}/charts/ibm-platform-navigator-instance"
   instance_yaml_dir     = "${path.cwd}/.tmp/${local.base_name}/chart/${local.instance_name}"
-  //instance_yaml_dir     = "${path.cwd}/.tmp/ibm-platform-navigator/chart/ibm-platform-navigator-instance"
+  namespace          = var.subscription_namespace != "openshift-operators" ? var.namespace : "platform-navigator"
 
   subscription_values_content = {
     "ibm_platform_navigator_operator" = { 
@@ -45,7 +45,8 @@ locals {
   values_file = "values.yaml"
   layer = "services"
   application_branch = "main"
-  type="instances"
+  subscription_type = "operators"
+  type = "instances"
   layer_config = var.gitops_config[local.layer]
 }
 
@@ -74,7 +75,7 @@ resource null_resource setup_subscription_gitops {
     yaml_dir = local.subscription_yaml_dir
     server_name = var.server_name
     layer = local.layer
-    type = "operators"
+    type = local.subscription_type
     git_credentials = yamlencode(var.git_credentials)
     gitops_config   = yamlencode(var.gitops_config)
   }
@@ -99,6 +100,14 @@ resource null_resource setup_subscription_gitops {
   }
 }
 
+module namespace {
+  source = "github.com/cloud-native-toolkit/terraform-gitops-namespace.git"
+
+  gitops_config = var.gitops_config
+  git_credentials = var.git_credentials
+  name = local.namespace
+}
+
 module pull_secret {
   source = "github.com/cloud-native-toolkit/terraform-gitops-pull-secret"
 
@@ -106,7 +115,7 @@ module pull_secret {
   git_credentials = var.git_credentials
   server_name = var.server_name
   kubeseal_cert = var.kubeseal_cert
-  namespace = var.namespace
+  namespace = module.namespace.name
   docker_username = "cp"
   docker_password = var.entitlement_key
   docker_server   = "cp.icr.io"
@@ -130,7 +139,7 @@ resource null_resource setup_instance_gitops {
   triggers = {
     bin_dir = local.bin_dir
     name = local.instance_name
-    namespace = var.namespace
+    namespace = module.namespace.name
     yaml_dir = local.instance_yaml_dir
     server_name = var.server_name
     layer = local.layer
