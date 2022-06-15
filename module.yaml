@@ -16,13 +16,13 @@ versions:
         refs:
           - source: github.com/cloud-native-toolkit/terraform-tools-gitops.git
             version: ">= 1.1.0"
-      - id: namespace
-        refs:
-          - source: github.com/cloud-native-toolkit/terraform-gitops-namespace.git
-            version: ">= 1.0.0"
       - id: catalogs
         refs:
           - source: github.com/cloud-native-toolkit/terraform-gitops-cp-catalogs.git
+            version: ">= 1.0.0"
+      - id: ibm-common-services
+        ref:
+          - source: github.com/cloud-native-toolkit/terraform-gitops-cp-foundational-services
             version: ">= 1.0.0"
       - id: dep-manager
         refs:
@@ -45,10 +45,6 @@ versions:
         moduleRef:
           id: gitops
           output: sealed_secrets_cert
-      - name: namespace
-        moduleRef:
-          id: namespace
-          output: name
       - name: catalog
         moduleRef:
           id: catalogs
