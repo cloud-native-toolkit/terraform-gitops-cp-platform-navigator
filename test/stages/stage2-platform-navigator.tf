@@ -14,7 +14,7 @@ module "gitops_module" {
   kubeseal_cert = module.cert.cert
   
   #Gowtham: Instance of the CP4i Platform navigator to be created in gitops-cp4i
-  storageclass = "portworx-db2-rwx-sc"
+  storageclass = "portworx-rwx-gp-sc"
 }
 
 
