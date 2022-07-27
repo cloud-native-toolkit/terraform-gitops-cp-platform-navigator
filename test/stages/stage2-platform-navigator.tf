@@ -10,7 +10,9 @@ module "gitops_module" {
   instance_version = module.cp4i-dependencies.platform_navigator.version
   license = module.cp4i-dependencies.platform_navigator.license
   entitlement_key = module.cp_catalogs.entitlement_key
-  kubeseal_cert = module.gitops.sealed_secrets_cert
+  #kubeseal_cert = module.gitops.sealed_secrets_cert
+  kubeseal_cert = module.cert.cert
+  
   #Gowtham: Instance of the CP4i Platform navigator to be created in gitops-cp4i
   storageclass = "portworx-rwx-gp-sc"
 }
