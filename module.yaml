@@ -13,7 +13,7 @@ versions:
       - ocp4
     providers:
      - name: gitops
-       source: "cloud-native-toolkit/gitops"
+       source: "cloud-native-toolkit/gitops" 
     dependencies:
       - id: gitops
         refs:
