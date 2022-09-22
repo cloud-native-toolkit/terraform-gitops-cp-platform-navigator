@@ -26,7 +26,7 @@ output "server_name" {
 output "layer" {
   description = "The layer where the module is deployed"
   value       = local.layer
-  depends_on  = [resource.sgitops_module.etup_instance_gitops]
+  depends_on  = [resource.gitops_module.setup_instance_gitops]
 }
 
 output "type" {

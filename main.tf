@@ -68,7 +68,7 @@ resource gitops_module setup_subscription_gitops {
   depends_on = [null_resource.create_subscription_yaml]
 
   name = local.subscription_name
-  namespace = local.subscription_namespace
+  namespace = var.subscription_namespace
   content_dir = local.subscription_yaml_dir
   server_name = var.server_name
   layer = local.layer
