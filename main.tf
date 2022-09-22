@@ -49,9 +49,6 @@ locals {
   layer_config = var.gitops_config[local.layer]
 }
 
-module setup_clis {
-  source = "github.com/cloud-native-toolkit/terraform-util-clis.git"
-}
 
 #This one is for creating subscription yaml
 resource null_resource create_subscription_yaml {
