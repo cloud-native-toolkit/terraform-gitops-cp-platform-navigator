@@ -2,7 +2,6 @@ locals {
   base_name     = "ibm-platform-navigator"
   subscription_name = "${local.base_name}-operator"
   instance_name = "${local.base_name}-instance"
-  bin_dir       = module.setup_clis.bin_dir
   subscription_chart_dir = "${path.module}/charts/ibm-platform-navigator-operator"
   subscription_yaml_dir = "${path.cwd}/.tmp/${local.base_name}/chart/${local.subscription_name}"
   //subscription_yaml_dir = "${path.cwd}/.tmp/ibm-platform-navigator/chart/ibm-platform-navigator-operator"
@@ -49,9 +48,6 @@ locals {
   layer_config = var.gitops_config[local.layer]
 }
 
-module setup_clis {
-  source = "github.com/cloud-native-toolkit/terraform-util-clis.git"
-}
 
 #This one is for creating subscription yaml
 resource null_resource create_subscription_yaml {
@@ -64,39 +60,18 @@ resource null_resource create_subscription_yaml {
   }
 }
 
-resource null_resource setup_subscription_gitops {
+resource gitops_module setup_subscription_gitops {
   depends_on = [null_resource.create_subscription_yaml]
 
-  triggers = {
-    bin_dir = local.bin_dir
-    name = local.subscription_name
-    namespace = var.subscription_namespace
-    yaml_dir = local.subscription_yaml_dir
-    server_name = var.server_name
-    layer = local.layer
-    type = "operators"
-    git_credentials = yamlencode(var.git_credentials)
-    gitops_config   = yamlencode(var.gitops_config)
-  }
-
-  provisioner "local-exec" {
-    command = "${self.triggers.bin_dir}/igc gitops-module '${self.triggers.name}' -n '${self.triggers.namespace}' --contentDir '${self.triggers.yaml_dir}' --serverName '${self.triggers.server_name}' -l '${self.triggers.layer}' --type='${self.triggers.type}' --valueFiles='${local.values_file}'"
-
-    environment = {
-      GIT_CREDENTIALS = nonsensitive(self.triggers.git_credentials)
-      GITOPS_CONFIG   = self.triggers.gitops_config
-    }
-  }
-
-  provisioner "local-exec" {
-    when = destroy
-    command = "${self.triggers.bin_dir}/igc gitops-module '${self.triggers.name}' -n '${self.triggers.namespace}' --delete --contentDir '${self.triggers.yaml_dir}' --serverName '${self.triggers.server_name}' -l '${self.triggers.layer}' --type '${self.triggers.type}'"
-
-    environment = {
-      GIT_CREDENTIALS = nonsensitive(self.triggers.git_credentials)
-      GITOPS_CONFIG   = self.triggers.gitops_config
-    }
-  }
+  name = local.subscription_name
+  namespace = var.subscription_namespace
+  content_dir = local.subscription_yaml_dir
+  server_name = var.server_name
+  layer = local.layer
+  type = "operators"
+  branch = local.application_branch
+  config = yamlencode(var.gitops_config)
+  credentials = yamlencode(var.git_credentials)
 }
 
 module pull_secret {
@@ -114,7 +89,7 @@ module pull_secret {
 }
 
 resource null_resource create_instance_yaml {
-  depends_on = [null_resource.setup_subscription_gitops]
+  depends_on = [resource.gitops_module.setup_subscription_gitops]
   provisioner "local-exec" {
     command = "${path.module}/scripts/create-yaml.sh '${local.instance_name}' '${local.instance_chart_dir}' '${local.instance_yaml_dir}' '${local.values_file}'"
 
@@ -124,37 +99,16 @@ resource null_resource create_instance_yaml {
   }
 }
 
-resource null_resource setup_instance_gitops {
+resource gitops_module setup_instance_gitops {
   depends_on = [null_resource.create_instance_yaml]
 
-  triggers = {
-    bin_dir = local.bin_dir
-    name = local.instance_name
-    namespace = var.namespace
-    yaml_dir = local.instance_yaml_dir
-    server_name = var.server_name
-    layer = local.layer
-    type = local.type
-    git_credentials = yamlencode(var.git_credentials)
-    gitops_config   = yamlencode(var.gitops_config)
-  }
-
-  provisioner "local-exec" {
-    command = "${self.triggers.bin_dir}/igc gitops-module '${self.triggers.name}' -n '${self.triggers.namespace}' --contentDir '${self.triggers.yaml_dir}' --serverName '${self.triggers.server_name}' -l '${self.triggers.layer}' --type=${self.triggers.type} --valueFiles='${local.values_file}'"
-
-    environment = {
-      GIT_CREDENTIALS = nonsensitive(self.triggers.git_credentials)
-      GITOPS_CONFIG   = self.triggers.gitops_config
-    }
-  }
-
-  provisioner "local-exec" {
-    when = destroy
-    command = "${self.triggers.bin_dir}/igc gitops-module '${self.triggers.name}' -n '${self.triggers.namespace}' --delete --contentDir '${self.triggers.yaml_dir}' --serverName '${self.triggers.server_name}' -l '${self.triggers.layer}' --type '${self.triggers.type}'"
-
-    environment = {
-      GIT_CREDENTIALS = nonsensitive(self.triggers.git_credentials)
-      GITOPS_CONFIG   = self.triggers.gitops_config
-    }
-  }
+  name = local.instance_name
+  namespace = var.namespace
+  content_dir = local.instance_yaml_dir
+  server_name = var.server_name
+  layer = local.layer
+  type = local.type
+  branch = local.application_branch
+  config = yamlencode(var.gitops_config)
+  credentials = yamlencode(var.git_credentials)
 }
