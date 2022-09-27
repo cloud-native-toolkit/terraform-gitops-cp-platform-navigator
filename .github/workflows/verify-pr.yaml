@@ -9,16 +9,70 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   verify:
-    if: ${{ !contains( github.event.pull_request.labels.*.name, 'skip ci' ) }}
-    uses: cloud-native-toolkit/action-workflows/.github/workflows/verify-gitops-module.yaml@v1
-    with:
-      testcase: ocp4_latest_gitops_cp4i
-    secrets:
-      AWS_CLUSTER_USERNAME: ${{ secrets.AWS_CLUSTER_USERNAME }}
-      AWS_CLUSTER_PASSWORD: ${{ secrets.AWS_CLUSTER_PASSWORD }}
-      IBMCLOUD_API_KEY: ${{ secrets.IBMCLOUD_API_KEY }}
-      CP_ENTITLEMENT_KEY: ${{ secrets.CP_ENTITLEMENT_KEY }}
-      TESTCASE_OVERRIDE: ${{ secrets.TESTCASE_OVERRIDE }}
+    runs-on: ubuntu-latest
+    container: quay.io/cloudnativetoolkit/cli-tools:v1.2
+
+    strategy:
+      matrix:
+        testcase:
+          - ocp4_latest_gitops_cp4i
+      max-parallel: 1
+      fail-fast: false
+
+    env:
+      HOME: /home/devops
+      TF_LOG_PROVIDER: INFO
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - id: variables
+        name: Set up variables
+        env:
+          GIT_ORG: ${{ secrets.GIT_ORG }}
+          AWS_CLUSTER_USERNAME: ${{ secrets.AWS_CLUSTER_USERNAME }}
+          AWS_CLUSTER_PASSWORD: ${{ secrets.AWS_CLUSTER_PASSWORD }}
+          IBM_CLUSTER_USERNAME: "apikey"
+          IBM_CLUSTER_PASSWORD: ${{ secrets.IBMCLOUD_API_KEY }}
+          ENVIRONMENT: ${{ secrets.TESTCASE_OVERRIDE || matrix.testcase }}
+        shell: bash
+        run: |
+          if [ -n "$secrets.TESTCASE_OVERRIDE" ]; then
+            echo "${{ secrets.TESTCASE_OVERRIDE || matrix.testcase }}" | sed -e 's/\(.\)/\1\n/g'
+          fi
+          
+          repo=$(echo ${GITHUB_REPOSITORY} | sed -E "s~.*/[^-]+-(.*)~\1-${{ secrets.TESTCASE_OVERRIDE || matrix.testcase }}~g" | sed 's/_latest_gitops//g')
+          echo "Repo: $repo"
+          echo "::set-output name=repo::$repo"
+          org="${GIT_ORG}"
+          echo "Org: $org"
+          echo "::set-output name=org::$org"
+          if [[ $ENVIRONMENT =~ ^aws ]]; then
+            echo "::set-output name=CLUSTER_USERNAME::$AWS_CLUSTER_USERNAME"
+            echo "::set-output name=CLUSTER_PASSWORD::$AWS_CLUSTER_PASSWORD"
+          else 
+            echo "::set-output name=CLUSTER_USERNAME::$IBM_CLUSTER_USERNAME"
+            echo "::set-output name=CLUSTER_PASSWORD::$IBM_CLUSTER_PASSWORD"
+          fi
+      - name: Verify deploy on ${{ secrets.TESTCASE_OVERRIDE || matrix.testcase }}
+        uses: cloud-native-toolkit/action-module-verify-deploy@main
+        with:
+          clusterId: ${{ secrets.TESTCASE_OVERRIDE || matrix.testcase }}
+          validateDeployScript: .github/scripts/validate-deploy.sh
+        env:
+          TF_VAR_git_username: ${{ secrets.GIT_ADMIN_USERNAME }}
+          TF_VAR_git_token: ${{ secrets.GIT_ADMIN_TOKEN }}
+          TF_VAR_git_org: ${{ steps.variables.outputs.org }}
+          TF_VAR_git_repo: ${{ steps.variables.outputs.repo }}
+          TF_VAR_bootstrap_prefix: ${{ steps.variables.outputs.repo }}
+          TF_VAR_cp_entitlement_key: ${{ secrets.CP_ENTITLEMENT_KEY }}
+          TF_VAR_cluster_username: ${{ steps.variables.outputs.CLUSTER_USERNAME }}
+          TF_VAR_cluster_password: ${{ steps.variables.outputs.CLUSTER_PASSWORD }}
+          TF_VAR_ibmcloud_api_key: ${{ secrets.IBMCLOUD_API_KEY }}
+          TF_VAR_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          TF_VAR_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
   verifyMetadata:
     uses: cloud-native-toolkit/action-workflows/.github/workflows/verify-module-metadata.yaml@v1
