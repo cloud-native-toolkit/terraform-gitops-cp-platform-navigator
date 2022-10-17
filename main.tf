@@ -74,18 +74,19 @@ resource gitops_module setup_subscription_gitops {
   credentials = yamlencode(var.git_credentials)
 }
 
-module pull_secret {
-  source = "github.com/cloud-native-toolkit/terraform-gitops-pull-secret"
-
-  gitops_config = var.gitops_config
-  git_credentials = var.git_credentials
-  server_name = var.server_name
-  kubeseal_cert = var.kubeseal_cert
+resource gitops_pull_secret cp_icr_io {
+  name = "ibm-entitlement-key"
   namespace = var.namespace
-  docker_username = "cp"
-  docker_password = var.entitlement_key
-  docker_server   = "cp.icr.io"
-  secret_name     = "ibm-entitlement-key"
+  server_name = var.server_name
+  branch = local.application_branch
+  layer = local.layer
+  credentials = yamlencode(var.git_credentials)
+  config = yamlencode(var.gitops_config)
+  kubeseal_cert = var.kubeseal_cert
+  secret_name = "ibm-entitlement-key"
+  registry_server = "cp.icr.io"
+  registry_username = "cp"
+  registry_password = var.entitlement_key
 }
 
 resource null_resource create_instance_yaml {
