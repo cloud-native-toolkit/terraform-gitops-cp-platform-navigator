@@ -80,5 +80,5 @@ variable "cp_entitlement_key" {
 variable "storageclass" {
   type=string
   description = "RWX storage required for PlatformNavigator"
-  default="portworx-rwx-gp-sc"
+  default="ocs-storagecluster-cephfs"
 }
