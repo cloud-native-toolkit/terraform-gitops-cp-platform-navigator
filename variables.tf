@@ -134,6 +134,4 @@ variable "storageclass" {
   type = string
   description = "For Platformnavigator we require RWX storage class."
   #for VPC based cluster configured with PortWorx
-  default="portworx-rwx-gp-sc"
-  
 }
